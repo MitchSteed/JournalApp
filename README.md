@@ -25,14 +25,6 @@ Next, install dependencies:
 npm install
 ```
 
-## Configure front end
-
-Link the `public` directory to one of the available front ends. For example:
-
-```
-ln -s ../listomatic-react/public .
-```
-
 ## Run the app
 
 ```
