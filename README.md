@@ -1,9 +1,5 @@
-# list-o-matic Node.js server using mongodb
+# Journal App, use to write and read journal entries. 
 
-A simple list server to demonstrate a REST API that can be called from a front
-end or a third-party application. Uses Node.js and Express, with
-username/password for login, token-based authentication, and mongoose as an
-ORM for mongodb.
 
 ## Dependencies
 
@@ -36,12 +32,6 @@ Link the `public` directory to one of the available front ends. For example:
 ```
 ln -s ../listomatic-react/public .
 ```
-
-The available front ends are:
-
-- [listomatic-react](https://github.com/zappala/listomatic-react)
-- [listomatic-angular](https://github.com/zappala/listomatic-angular)
-- [listomatic-ember](https://github.com/zappala/listomatic-ember)
 
 ## Run the app
 
