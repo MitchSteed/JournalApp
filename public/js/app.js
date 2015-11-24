@@ -63,7 +63,7 @@ var App = React.createClass({
             <span className="icon-bar"></span>
             <span className="icon-bar"></span>
             </button>
-            <a className="navbar-brand" href="/">List-o-matic</a>
+            <a className="navbar-brand" href="/"><span className="glyphicon glyphicon-book" aria-hidden="true"></span> Journal App</a>
             </div>
             <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             {this.state.loggedIn ? (
@@ -91,7 +91,7 @@ var Home = React.createClass({
     render: function() {
         return (
             <p>
-            <Link className="btn btn-default" to="login">Login</Link> or <Link className="btn btn-warning" to="register">Register</Link>
+                <Link className="btn btn-success" to="login">Login</Link> or <Link className="btn btn-primary" to="register">Register</Link>
             </p>
             );
     }
@@ -137,16 +137,24 @@ var Login = React.createClass({
     // show the login form
     render: function() {
         return (
-            <div>
-            <h2>Login</h2>
-            <form className="form-vertical" onSubmit={this.login}>
-            <input type="text" placeholder="Username" ref="username" autoFocus={true} />
-            <input type="password" placeholder="Password" ref="password"/>
-            <input className="btn btn-warning" type="submit" value="Login" />
-            {this.state.error ? (
-                <div className="alert">Invalid username or password.</div>
-                ) : null}
-            </form>
+            <div className="row">
+                <div className="col-md-8">
+                    <form onSubmit={this.login}>
+                        {this.state.error ? (
+                            <div className="alert alert-danger" role="alert"><strong>Invalid Credentials</strong></div>
+                        ) : null}
+                        <h2>Login</h2>
+                        <div className="form-group">
+                            <label>Username</label>
+                            <input type="text" className="form-control" placeholder="Username" ref="username" autoFocus={true} />
+                        </div>
+                        <div className="form-group">
+                            <label>Password</label>
+                            <input type="password" className="form-control" placeholder="Password" ref="password"/>
+                        </div>
+                        <input className="btn btn-success" type="submit" value="Login" />
+                    </form>
+                </div>
             </div>
             );
     }
@@ -193,16 +201,28 @@ var Register = React.createClass({
     render: function() {
         return (
             <div>
-            <h2>Register</h2>
-            <form className="form-vertical" onSubmit={this.register}>
-            <input type="text" placeholder="Name" ref="name" autoFocus={true} />
-            <input type="text" placeholder="Username" ref="username"/>
-            <input type="password" placeholder="Password" ref="password"/>
-            <input className="btn" type="submit" value="Register" />
-            {this.state.error ? (
-                <div className="alert">Invalid username or password.</div>
-                ) : null }
-            </form>
+                <form onSubmit={this.register}>
+                    {this.state.error ? (
+                            <div className="alert alert-danger" role="alert"><strong>Invalid Username or Password</strong></div>
+                        ) : null}
+                    <h2>Register</h2>
+                    <div className="form-group">
+                        <label>Username</label>
+                        <input type="text" placeholder="Name" className="form-control" ref="name" autoFocus={true} />
+                    </div>
+                    <div className="form-group">
+                        <label>Username</label>
+                        <input type="text" placeholder="Username" className="form-control" ref="username"/>
+                    </div>
+                    <div className="form-group">
+                        <label>Password</label>
+                        <input type="password" className="form-control" placeholder="Password" ref="password"/>
+                    </div>
+                    <input className="btn btn-primary" type="submit" value="Register" />
+                    {this.state.error ? (
+                        <div className="alert">Invalid username or password.</div>
+                        ) : null }
+                </form>
             </div>
             );
     }
@@ -251,11 +271,11 @@ var List = React.createClass({
         var name = auth.getName();
         return (
             <section id="todoapp">
-            <ListHeader name={name} items={this.state.items} reload={this.reload} />
-            <section id="main">
-            <ListEntry reload={this.reload}/>
-            <ListItems items={this.state.items} reload={this.reload}/>
-            </section>
+                <ListHeader name={name} items={this.state.items} reload={this.reload} />
+                <section id="main">
+                    <ListEntry reload={this.reload}/>
+                    <ListItems items={this.state.items} reload={this.reload}/>
+                </section>
             </section>
             );
     }
@@ -284,24 +304,22 @@ var ListHeader = React.createClass({
         });
         return (
             <header id="header">
-            <div className="row">
-            <div className="col-md-6">
-            <p><i>Lovingly created for {this.props.name}</i></p>
-            <p>
-            <span id="list-count" className="label label-default">
-            <strong>{this.props.items.length}</strong> item(s)
-            </span>
-            </p>
-            <p><i>Double-click to edit an item</i></p>
-            </div>
-            {completed.length > 0 ? (
-                <div className="col-md-6 right">
-                <button className="btn btn-warning btn-md" id="clear-completed" onClick={this.clearCompleted}>Clear completed ({completed.length})
-
-                </button>
+                <div className="row">
+                    <div className="col-md-6">
+                        <p><i>Lovingly created for {this.props.name}</i></p>
+                        <p>
+                        <span id="list-count" className="label label-default">
+                        <strong>{this.props.items.length}</strong> item(s)
+                        </span>
+                        </p>
+                        <p><i>Double-click to edit an item</i></p>
+                    </div>
+                    {completed.length > 0 ? (
+                        <div className="col-md-6 right">
+                            <button className="btn btn-warning btn-md" id="clear-completed" onClick={this.clearCompleted}>Clear completed ({completed.length})</button>
+                        </div>
+                        ) : null }
                 </div>
-                ) : null }
-            </div>
             </header>
             );
     }
