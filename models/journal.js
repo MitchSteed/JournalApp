@@ -38,10 +38,40 @@ entrySchema.methods.addEntry = function(date, words, keys, uname)
 
 entrySchema.methods.getEntries = function(uname)
 {
-	Entry.find({username: uname}, function(err,entries){
+	Entry.find({user_name: uname}, function(err,entries){
 		if (err) return console.error(err);
 		console.dir(entries);
 		return entries;
+	});
+}
+
+entrySchema.methods.keywordSearch = function(uname, keys)
+{
+	Entry.find({user_name: uname}, function(err,entries){
+		if (err) return console.error(err);
+		var array = [];
+		//console.dir("here ya go");
+		//console.dir(entries.length);
+		for(var i=0; i<entries.length; i++)
+		{
+			var there = false;
+			for (var k=0; k < entries[i].keywords.length; k++)
+			{
+				//console.dir(entries[i].keywords[k]);
+				if(entries[i].keywords[k] === key)
+				{
+					there = true;
+				}
+			}
+			if(there)
+			{
+				array.push(entries[i]);
+			}
+			
+		}
+		//console.dir('the array');
+		//console.dir(array);
+		return array;
 	});
 }
 
