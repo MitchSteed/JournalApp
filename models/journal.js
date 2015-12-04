@@ -12,17 +12,19 @@ var entrySchema = new Schema({
 	user: {type: ObjectId, ref: 'users'},
 	day: {type: Date, default: Date.now},
 	text: String, //look into creating a file and then storing the path
-	keywords: [String]
+	keywords: [String],
+	title: String
 });
 
 //Adds an entry with the given information... pass in empty array if no keywords
-entrySchema.methods.addEntry = function(date, words, keys, uname)
+entrySchema.methods.addEntry = function(date, words, keys, uname, t)
 {
 	var today = new Entry({
 		day: date,
 		text: words,
 		keywords: keys,
-		user: uname
+		user: uname,
+		title: t
 	});
 
 	today.save(function(err, today){
