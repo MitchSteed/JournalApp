@@ -38,6 +38,7 @@ var CreateJournal = React.createClass({
         // call API to add item, and reload once added
         api.addItem(title, this.props.reload);
         this.refs.title.getDOMNode().value = '';*/
+        api.addEntry(title, body, tags, this.props.reload);
         this.context.router.transitionTo('/journals');
     },
 
@@ -592,6 +593,36 @@ var api = {
             }
         });
 
+    },
+    addEntry: function(title, text, keywords, cb) {
+        var url = "/api/entries";
+        var cleanedUp = keywords.split(",");
+        for (var i = 0; i < cleanedUp.length; i++) {
+            cleanedUp[i] = cleanedUp[i].trim();
+        }
+        $.ajax({
+            url: url,
+            contentType: 'application/json',
+            data: JSON.stringify({
+                entry: {
+                    'title': title,
+                    'text': text,
+                    'keywords': cleanedUp,
+                }
+            }),
+            type: 'POST',
+            headers: {'Authorization': localStorage.token},
+            success: function(res) {
+                if (cb)
+                    cb(true, res);
+            },
+            error: function(xhr, status, err) {
+                // if there is an error, remove the login token
+                delete localStorage.token;
+                if (cb)
+                    cb(false, status);
+            }
+        });
     },
     // update an item, call the callback when complete
     updateItem: function(item, cb) {

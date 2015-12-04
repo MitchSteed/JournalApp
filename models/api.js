@@ -1,6 +1,7 @@
 var app = require('./express.js');
 var User = require('./user.js');
 var Item = require('./item.js');
+var Entry = require('./journal.js');
 
 // setup body parser
 var bodyParser = require('body-parser');
@@ -127,10 +128,12 @@ app.post('/api/items', function (req,res) {
 app.post('/api/entries', function (req,res) {
     // validate the supplied token
     // get indexes
+    console.log(req.body.entry.title);
+    console.log(req.body.entry.text);
     user = User.verifyToken(req.headers.authorization, function(user) {
         if (user) {
             // if the token is valid, create the item for the user
-            Entry.create({title:req.body.item.title, user:user.id, text:req.body.text, keywords:req.body.keywords}, function(err,entry) {
+            Entry.create({title:req.body.entry.title, user:user.id, text:req.body.entry.text, keywords:req.body.entry.keywords}, function(err,entry) {
                 if (err) {
                     res.sendStatus(403);
                     return;
