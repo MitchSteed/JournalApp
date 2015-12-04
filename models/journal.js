@@ -20,7 +20,7 @@ var entrySchema = new Schema({
 	user_name: String
 });
 
-
+//Adds an entry with the given information... pass in empty array if no keywords
 entrySchema.methods.addEntry = function(date, words, keys, uname)
 {
 	var today = new Entry({
@@ -36,6 +36,7 @@ entrySchema.methods.addEntry = function(date, words, keys, uname)
 	});
 }
 
+//Input: user, returns all Entries from the user
 entrySchema.methods.getEntries = function(uname)
 {
 	Entry.find({user_name: uname}, function(err,entries){
@@ -45,19 +46,17 @@ entrySchema.methods.getEntries = function(uname)
 	});
 }
 
-entrySchema.methods.keywordSearch = function(uname, keys)
+//Input: username and a keyword, returns an array of all corresponding entries
+entrySchema.methods.keywordSearch = function(uname, key)
 {
 	Entry.find({user_name: uname}, function(err,entries){
 		if (err) return console.error(err);
 		var array = [];
-		//console.dir("here ya go");
-		//console.dir(entries.length);
 		for(var i=0; i<entries.length; i++)
 		{
 			var there = false;
 			for (var k=0; k < entries[i].keywords.length; k++)
 			{
-				//console.dir(entries[i].keywords[k]);
 				if(entries[i].keywords[k] === key)
 				{
 					there = true;
@@ -69,12 +68,12 @@ entrySchema.methods.keywordSearch = function(uname, keys)
 			}
 			
 		}
-		//console.dir('the array');
-		//console.dir(array);
 		return array;
 	});
 }
 
+//Given the username and the day, returns that entry 
+//day object has to be exact, including seconds. I can change to make it less specific
 entrySchema.methods.specificEntry = function(uname, day)
 {
 	Entry.find({user_name: uname, day: date}, function(err,entry){
@@ -84,6 +83,7 @@ entrySchema.methods.specificEntry = function(uname, day)
 	});
 }
 
+//Accepts the username, month and year and returns an array of all corresponding entries
 entrySchema.methods.monthEntries = function(uname, month, year)
 {
 	Entry.find({user_name: uname}, function(err,entries){
@@ -92,15 +92,15 @@ entrySchema.methods.monthEntries = function(uname, month, year)
 		console.dir(entries);
 		for(var i=0; i<entries.length; i++)
 		{
-			console.dir(entries[i].day.getMonth() + ' vs ' + month);
-			console.dir(entries[i].day.getYear() + ' vs ' + year);
+			//console.dir(entries[i].day.getMonth() + ' vs ' + month);
+			//console.dir(entries[i].day.getYear() + ' vs ' + year);
 			if(entries[i].day.getMonth() === month && entries[i].day.getYear()=== year)
 			{
 				array.push(entries[i]);
 			}
 		}
-		console.dir(array);
-
+		//console.dir(array);
+		return array;
 	});
 }
 
