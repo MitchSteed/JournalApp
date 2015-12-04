@@ -81,6 +81,27 @@ app.get('/api/items', function (req,res) {
     });
 });
 
+// get all items for the user
+app.get('/api/entries', function (req,res) {
+    // validate the supplied token
+    user = User.verifyToken(req.headers.authorization, function(user) {
+        if (user) {
+            // if the token is valid, find all the user's items and return them
+            Entry.getEntries({user:user.id}, function(err, entries) {
+                if (err) {
+                    res.sendStatus(403);
+                    return;
+                }
+                // return value is the list of items as JSON
+                res.json({entries: entries});
+            });
+        } 
+        else {
+            res.sendStatus(403);
+        }
+    });
+});
+
 // add an item
 app.post('/api/items', function (req,res) {
     // validate the supplied token
@@ -95,6 +116,27 @@ app.post('/api/items', function (req,res) {
         		}
         		res.json({item:item});
     	    });
+        } 
+        else {
+            res.sendStatus(403);
+        }
+    });
+});
+
+// add an item
+app.post('/api/entries', function (req,res) {
+    // validate the supplied token
+    // get indexes
+    user = User.verifyToken(req.headers.authorization, function(user) {
+        if (user) {
+            // if the token is valid, create the item for the user
+            Entry.create({title:req.body.item.title, user:user.id, text:req.body.text, keywords:req.body.keywords}, function(err,entry) {
+                if (err) {
+                    res.sendStatus(403);
+                    return;
+                }
+                res.json({entry:entry});
+            });
         } 
         else {
             res.sendStatus(403);
@@ -120,6 +162,32 @@ app.get('/api/items/:item_id', function (req,res) {
                 }
                 // return value is the item as JSON
                 res.json({item:item});
+            });
+        } 
+        else {
+            res.sendStatus(403);
+        }
+    });
+});
+
+// get an item
+app.get('/api/entries/:entry_id', function (req,res) {
+    // validate the supplied token
+    user = User.verifyToken(req.headers.authorization, function(user) {
+        if (user) {
+            // if the token is valid, then find the requested item
+            Entry.findById(req.params.entry_id, function(err, entry) {
+                if (err) {
+                    res.sendStatus(403);
+                    return;
+                }
+                // get the item if it belongs to the user, otherwise return an error
+                if (entry.user != user) {
+                    res.sendStatus(403);
+                    return;
+                }
+                // return value is the item as JSON
+                res.json({entry:entry});
             });
         } 
         else {
