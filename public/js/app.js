@@ -14,9 +14,120 @@ var Redirect = Router.Redirect;
 //   Register
 //   Login
 //     ListHeader
-//     ListEntry
 //     ListItems
 //       Item
+// List page, shows the todo list of items
+
+var CreateJournal = React.createClass({
+    // context so the component can access the router
+    contextTypes: {
+        router: React.PropTypes.func
+    },
+    // handles submit event for adding a new item
+    addItem: function(event) {
+        // prevent default browser submit
+        event.preventDefault();
+        // get data from form
+        var title = this.refs.title.getDOMNode().value;
+        var body = this.refs.entry.getDOMNode().value;
+        var tags = this.refs.keywords.getDOMNode().value;
+        if (!title || !body) {
+            return;
+        }
+        /*return;
+        // call API to add item, and reload once added
+        api.addItem(title, this.props.reload);
+        this.refs.title.getDOMNode().value = '';*/
+        this.context.router.transitionTo('/journals');
+    },
+
+    // render the item entry area
+    render: function() {
+        return (
+            <form onSubmit={this.addItem}>
+                <div className="form-group">
+                    <label>Entry Title</label>
+                    <input type="text" className="form-control" ref="title" id="entryTitle" placeholder="Title" autoFocus={true} />
+                </div>
+                <div className="form-group">
+                    <label>Entry</label>
+                    <textarea className="form-control" ref="entry" id="entrybody"></textarea>
+                </div>
+                <div className="form-group">
+                    <label>Keyword Tags</label>
+                    <input type="text" className="form-control" ref="keywords" id="keywords" placeholder="keywords"/>
+                </div>
+                <input className="btn btn-success" type="submit" value="Create" />
+            </form>
+            );
+
+    }
+});
+
+// Login page, shows the login form and redirects to the list if login is successful
+var Login = React.createClass({
+    // context so the component can access the router
+    contextTypes: {
+        router: React.PropTypes.func
+    },
+
+    // initial state
+    getInitialState: function() {
+        return {
+            // there was an error on logging in
+            error: false
+        };
+
+    },
+
+    // handle login button submit
+    login: function(event) {
+        // prevent default browser submit
+        event.preventDefault();
+        console.log(this.refs);
+        // get data from form
+        var username = this.refs.username.getDOMNode().value;
+        var password = this.refs.password.getDOMNode().value;
+        if (!username || !password) {
+            return;
+        }
+        // login via API
+        auth.login(username, password, function(loggedIn) {
+            // login callback
+            if (!loggedIn)
+                return this.setState({
+                    error: true
+                });
+            this.context.router.transitionTo('/list');
+        }.bind(this));
+    },
+
+    // show the login form
+    render: function() {
+        return (
+            <div className="row">
+                <div className="col-md-8">
+                    <form onSubmit={this.login}>
+                        {this.state.error ? (
+                            <div className="alert alert-danger" role="alert"><strong>Invalid Credentials</strong></div>
+                        ) : null}
+                        <h2>Login</h2>
+                        <div className="form-group">
+                            <label>Username</label>
+                            <input type="text" className="form-control" placeholder="Username" ref="username" autoFocus={true} />
+                        </div>
+                        <div className="form-group">
+                            <label>Password</label>
+                            <input type="password" className="form-control" placeholder="Password" ref="password"/>
+                        </div>
+                        <input className="btn btn-success" type="submit" value="Login" />
+                    </form>
+                </div>
+            </div>
+            );
+    }
+});
+
 
 // Top-level component for the app
 var App = React.createClass({
@@ -71,6 +182,8 @@ var App = React.createClass({
                 <li><a href="#/list">All</a></li>
                 <li><a href="#/list/active">Active</a></li>
                 <li><a href="#/list/completed">Completed</a></li>
+                <li><a href="#/journal">Journals</a></li>
+                <li><a href="#/journal/create">Create Journal</a></li>
                 <li><a href="#" onClick={this.logout}>Logout</a></li>
                 </ul>
                 ) : (<div></div>)}
@@ -97,68 +210,6 @@ var Home = React.createClass({
     }
 });
 
-// Login page, shows the login form and redirects to the list if login is successful
-var Login = React.createClass({
-    // context so the component can access the router
-    contextTypes: {
-        router: React.PropTypes.func
-    },
-
-    // initial state
-    getInitialState: function() {
-        return {
-            // there was an error on logging in
-            error: false
-        };
-
-    },
-
-    // handle login button submit
-    login: function(event) {
-        // prevent default browser submit
-        event.preventDefault();
-        // get data from form
-        var username = this.refs.username.getDOMNode().value;
-        var password = this.refs.password.getDOMNode().value;
-        if (!username || !password) {
-            return;
-        }
-        // login via API
-        auth.login(username, password, function(loggedIn) {
-            // login callback
-            if (!loggedIn)
-                return this.setState({
-                    error: true
-                });
-            this.context.router.transitionTo('/list');
-        }.bind(this));
-    },
-
-    // show the login form
-    render: function() {
-        return (
-            <div className="row">
-                <div className="col-md-8">
-                    <form onSubmit={this.login}>
-                        {this.state.error ? (
-                            <div className="alert alert-danger" role="alert"><strong>Invalid Credentials</strong></div>
-                        ) : null}
-                        <h2>Login</h2>
-                        <div className="form-group">
-                            <label>Username</label>
-                            <input type="text" className="form-control" placeholder="Username" ref="username" autoFocus={true} />
-                        </div>
-                        <div className="form-group">
-                            <label>Password</label>
-                            <input type="password" className="form-control" placeholder="Password" ref="password"/>
-                        </div>
-                        <input className="btn btn-success" type="submit" value="Login" />
-                    </form>
-                </div>
-            </div>
-            );
-    }
-});
 
 // Register page, shows the registration form and redirects to the list if login is successful
 var Register = React.createClass({
@@ -207,7 +258,7 @@ var Register = React.createClass({
                         ) : null}
                     <h2>Register</h2>
                     <div className="form-group">
-                        <label>Username</label>
+                        <label>Name</label>
                         <input type="text" placeholder="Name" className="form-control" ref="name" autoFocus={true} />
                     </div>
                     <div className="form-group">
@@ -219,11 +270,60 @@ var Register = React.createClass({
                         <input type="password" className="form-control" placeholder="Password" ref="password"/>
                     </div>
                     <input className="btn btn-primary" type="submit" value="Register" />
-                    {this.state.error ? (
-                        <div className="alert">Invalid username or password.</div>
-                        ) : null }
                 </form>
             </div>
+            );
+    }
+});
+
+var Journal = React.createClass({
+    // context so the component can access the router
+    contextTypes: {
+        router: React.PropTypes.func
+    },
+
+    // initial state
+    getInitialState: function() {
+        return {
+            // list of items in the todo list
+            items: [],
+            entries: [],
+        };
+    },
+
+    // when the component loads, get the list items
+    componentDidMount: function() {
+        api.getItems(this.listSet);
+    },
+
+    // reload the list of items
+    reload: function() {
+        api.getItems(this.listSet);
+    },
+
+    // callback for getting the list of items, sets the list state
+    listSet: function(status, data) {
+        if (status) {
+            // set the state for the list of items
+            this.setState({
+                entries: data.items
+            });
+        } else {
+            // if the API call fails, redirect to the login page
+            this.context.router.transitionTo('/login');
+        }
+    },
+
+    // Show the list of items. This component has the following children: ListHeader, ListEntry and ListItems
+    render: function() {
+        var name = auth.getName();
+        return (
+            <section id="todoapp">
+                <ListHeader name={name} items={this.state.items} reload={this.reload} />
+                <section id="main">
+                    <ListItems items={this.state.items} reload={this.reload}/>
+                </section>
+            </section>
             );
     }
 });
@@ -273,7 +373,6 @@ var List = React.createClass({
             <section id="todoapp">
                 <ListHeader name={name} items={this.state.items} reload={this.reload} />
                 <section id="main">
-                    <ListEntry reload={this.reload}/>
                     <ListItems items={this.state.items} reload={this.reload}/>
                 </section>
             </section>
@@ -306,53 +405,19 @@ var ListHeader = React.createClass({
             <header id="header">
                 <div className="row">
                     <div className="col-md-6">
-                        <p><i>Lovingly created for {this.props.name}</i></p>
+                        <p><i>{this.props.name} Journal Entries</i></p>
                         <p>
                         <span id="list-count" className="label label-default">
-                        <strong>{this.props.items.length}</strong> item(s)
+                        <strong>{this.props.items.length}</strong> entries(s)
                         </span>
                         </p>
-                        <p><i>Double-click to edit an item</i></p>
                     </div>
-                    {completed.length > 0 ? (
-                        <div className="col-md-6 right">
-                            <button className="btn btn-warning btn-md" id="clear-completed" onClick={this.clearCompleted}>Clear completed ({completed.length})</button>
-                        </div>
-                        ) : null }
                 </div>
             </header>
             );
     }
 });
 
-// List entry component, handles adding new items to the list
-var ListEntry = React.createClass({
-    // handles submit event for adding a new item
-    addItem: function(event) {
-        // prevent default browser submit
-        event.preventDefault();
-        // get data from form
-        var title = this.refs.title.getDOMNode().value;
-        if (!title) {
-            return;
-        }
-        // call API to add item, and reload once added
-        api.addItem(title, this.props.reload);
-        this.refs.title.getDOMNode().value = '';
-    },
-
-    // render the item entry area
-    render: function() {
-        return (
-            <header id="input">
-            <form id="item-form" name="itemForm" onSubmit={this.addItem}>
-            <input type="text" id="new-item" ref="title" placeholder="Enter a new item" autoFocus={true} />
-            </form>
-            </header>
-            );
-
-    }
-});
 
 // List items component, shows the list of items
 var ListItems = React.createClass({
@@ -674,6 +739,8 @@ var routes = (
 	    <Route name="list" path ="/list" handler={List}/>
 	    <Route name="active" path = "/list/active" handler={List}/>
 	    <Route name="completed" path = "/list/completed" handler={List}/>
+        <Route name="createjournal" path = "/journal/create" handler={CreateJournal}/>
+        <Route name="listjournal" path = "/journal" handler={Journal}/>
 	    <Route name="login" handler={Login}/>
 	    <Route name="register" handler={Register}/>
     <DefaultRoute handler={Home}/>
