@@ -69,6 +69,15 @@ entrySchema.methods.keywordSearch = function(uname, key)
 	});
 }
 
+//search by Entry Title
+entrySchema.methods.titleSearch = function(uname, t)
+{
+	Entry.findOne({user: uname, title: t}, function(err, entry){
+		if (err) return console.error(err);
+		return entry;
+	});
+}
+
 //Given the username and the day, returns that entry 
 //day object has to be exact, including seconds. I can change to make it less specific
 entrySchema.methods.specificEntry = function(uname, day)
