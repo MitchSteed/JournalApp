@@ -75,6 +75,35 @@ entrySchema.methods.keywordSearch = function(uname, keys)
 	});
 }
 
+entrySchema.methods.specificEntry = function(uname, day)
+{
+	Entry.find({user_name: uname, day: date}, function(err,entry){
+		if (err) return console.error(err);
+		console.dir(entry);
+		return entry;
+	});
+}
+
+entrySchema.methods.monthEntries = function(uname, month, year)
+{
+	Entry.find({user_name: uname}, function(err,entries){
+		if (err) return console.error(err);
+		var array = [];
+		console.dir(entries);
+		for(var i=0; i<entries.length; i++)
+		{
+			console.dir(entries[i].day.getMonth() + ' vs ' + month);
+			console.dir(entries[i].day.getYear() + ' vs ' + year);
+			if(entries[i].day.getMonth() === month && entries[i].day.getYear()=== year)
+			{
+				array.push(entries[i]);
+			}
+		}
+		console.dir(array);
+
+	});
+}
+
 //do I need 
 //entrySchema.plugin(findOrCreate);
 
