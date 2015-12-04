@@ -1,23 +1,18 @@
 // setup Mongoose
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var ObjectId = Schema.ObjectId;
 var findOrCreate = require('mongoose-findorcreate')
 
-// setup bcrypt
-var bcrypt = require('bcrypt');
-var SALT = bcrypt.genSaltSync();
-
-// setup json web token
-var jwt = require('jsonwebtoken');
-var SECRET = '\x1f\x1e1\x8a\x8djO\x9e\xe4\xcb\x9d`\x13\x02\xfb+\xbb\x89q"F\x8a\xe0a';
+var User = require('./user.js');
 
 //creating Journal Entry collection
 //images and videos?????
 var entrySchema = new Schema({
-	day: {type: Date},
+	user: {type: ObjectId, ref: 'users'},
+	day: {type: Date, default: Date.now},
 	text: String, //look into creating a file and then storing the path
-	keywords: [String],
-	user_name: String
+	keywords: [String]
 });
 
 //Adds an entry with the given information... pass in empty array if no keywords
@@ -27,7 +22,7 @@ entrySchema.methods.addEntry = function(date, words, keys, uname)
 		day: date,
 		text: words,
 		keywords: keys,
-		user_name: uname
+		user: uname
 	});
 
 	today.save(function(err, today){
@@ -39,7 +34,7 @@ entrySchema.methods.addEntry = function(date, words, keys, uname)
 //Input: user, returns all Entries from the user
 entrySchema.methods.getEntries = function(uname)
 {
-	Entry.find({user_name: uname}, function(err,entries){
+	Entry.find({user: uname}, function(err,entries){
 		if (err) return console.error(err);
 		console.dir(entries);
 		return entries;
@@ -49,7 +44,7 @@ entrySchema.methods.getEntries = function(uname)
 //Input: username and a keyword, returns an array of all corresponding entries
 entrySchema.methods.keywordSearch = function(uname, key)
 {
-	Entry.find({user_name: uname}, function(err,entries){
+	Entry.find({user: uname}, function(err,entries){
 		if (err) return console.error(err);
 		var array = [];
 		for(var i=0; i<entries.length; i++)
@@ -76,7 +71,7 @@ entrySchema.methods.keywordSearch = function(uname, key)
 //day object has to be exact, including seconds. I can change to make it less specific
 entrySchema.methods.specificEntry = function(uname, day)
 {
-	Entry.find({user_name: uname, day: date}, function(err,entry){
+	Entry.find({user: uname, day: date}, function(err,entry){
 		if (err) return console.error(err);
 		console.dir(entry);
 		return entry;
@@ -86,7 +81,7 @@ entrySchema.methods.specificEntry = function(uname, day)
 //Accepts the username, month and year and returns an array of all corresponding entries
 entrySchema.methods.monthEntries = function(uname, month, year)
 {
-	Entry.find({user_name: uname}, function(err,entries){
+	Entry.find({user: uname}, function(err,entries){
 		if (err) return console.error(err);
 		var array = [];
 		console.dir(entries);
