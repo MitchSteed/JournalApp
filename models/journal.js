@@ -13,7 +13,8 @@ var entrySchema = new Schema({
 	day: {type: Date, default: Date.now},
 	text: String, //look into creating a file and then storing the path
 	keywords: [String],
-	title: String
+	title: String,
+	show_flag: {type: Boolean, default: true}
 });
 
 //Adds an entry with the given information... pass in empty array if no keywords
@@ -84,7 +85,7 @@ entrySchema.methods.specificEntry = function(uname, day)
 {
 	Entry.find({user: uname, day: date}, function(err,entry){
 		if (err) return console.error(err);
-		console.dir(entry);
+		//console.dir(entry);
 		return entry;
 	});
 }
@@ -107,6 +108,15 @@ entrySchema.methods.monthEntries = function(uname, month, year)
 		}
 		//console.dir(array);
 		return array;
+	});
+}
+
+//deleting an entry
+entrySchema.methods.deleteEntry = function(uname, date)
+{
+	Entry.findOne({user: uname, day: date}, function(err, model){
+		if(err) return;
+		model.remove(function(err){});
 	});
 }
 
