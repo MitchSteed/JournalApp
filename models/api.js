@@ -88,7 +88,7 @@ app.get('/api/entries', function (req,res) {
     user = User.verifyToken(req.headers.authorization, function(user) {
         if (user) {
             // if the token is valid, find all the user's items and return them
-            Entry.getEntries({user:user.id}, function(err, entries) {
+            Entry.find({user:user.id}, function(err, entries) {
                 if (err) {
                     res.sendStatus(403);
                     return;

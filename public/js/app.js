@@ -295,11 +295,13 @@ var Journal = React.createClass({
     // when the component loads, get the list items
     componentDidMount: function() {
         api.getItems(this.listSet);
+        api.getEntries(this.entrySet);
     },
 
     // reload the list of items
     reload: function() {
         api.getItems(this.listSet);
+        api.getEntries(this.entrySet);
     },
 
     // callback for getting the list of items, sets the list state
@@ -314,15 +316,26 @@ var Journal = React.createClass({
             this.context.router.transitionTo('/login');
         }
     },
+    entrySet: function(status, data) {
+        if (status) {
+            this.setState({
+                entries: data.entries
+            });
+        }
+        else {
+            this.context.router.transitionTo("/login");
+        }
+    },
 
     // Show the list of items. This component has the following children: ListHeader, ListEntry and ListItems
     render: function() {
         var name = auth.getName();
+        console.log("Journal Render");
         return (
             <section id="todoapp">
-                <ListHeader name={name} items={this.state.items} reload={this.reload} />
+                <ListHeader name={name} items={this.state.entries} reload={this.reload} />
                 <section id="main">
-                    <ListItems items={this.state.items} reload={this.reload}/>
+                    <ListItems items={this.state.entries} reload={this.reload}/>
                 </section>
             </section>
             );
@@ -370,6 +383,7 @@ var List = React.createClass({
     // Show the list of items. This component has the following children: ListHeader, ListEntry and ListItems
     render: function() {
         var name = auth.getName();
+        console.log("LIST RUNNING");
         return (
             <section id="todoapp">
                 <ListHeader name={name} items={this.state.items} reload={this.reload} />
@@ -384,24 +398,26 @@ var List = React.createClass({
 // List header, which shows who the list is for, the number of items in the list, and a button to clear completed items
 var ListHeader = React.createClass({
     // handle the clear completed button submit    
-    clearCompleted: function (event) {
-        // loop through the items, and delete any that are complete
-        this.props.items.forEach(function(item) {
-            if (item.completed) {
-                api.deleteItem(item, null);
-            }
-        });
-        // XXX race condition because the API call to delete is async
-        // reload the list
-        this.props.reload();
-    },
+    // clearCompleted: function (event) {
+    //     // loop through the items, and delete any that are complete
+    //     this.props.items.forEach(function(item) {
+    //         if (item.completed) {
+    //             api.deleteItem(item, null);
+    //         }
+    //     });
+    //     // XXX race condition because the API call to delete is async
+    //     // reload the list
+    //     this.props.reload();
+    // },
 
     // render the list header
     render: function() {
         // true if there are any completed items
-        var completed = this.props.items.filter(function(item) {
-            return item.completed;
-        });
+        // var completed = this.props.items.filter(function(item) {
+        //     return item.completed;
+        // });
+        console.log(this.props);
+        console.log(this.props.items);
         return (
             <header id="header">
                 <div className="row">
@@ -409,7 +425,7 @@ var ListHeader = React.createClass({
                         <p><i>{this.props.name} Journal Entries</i></p>
                         <p>
                         <span id="list-count" className="label label-default">
-                        <strong>{this.props.items.length}</strong> entries(s)
+                        <strong>{this.props.items.length}</strong> entrie(s)
                         </span>
                         </p>
                     </div>
@@ -431,14 +447,7 @@ var ListItems = React.createClass({
     render: function() {
         // get list of items to show, using the path to the current page
         var shown = this.props.items.filter(function(item) {
-            switch (this.context.router.getCurrentPathname()) {
-                case '/list/active':
-                return !item.completed;
-                case '/list/completed':
-                return item.completed;
-                default:
-                return true;
-            }
+            return true;
         }, this);
 
         // using the list of items, generate an Item element for each one
@@ -551,6 +560,25 @@ var api = {
     // get the list of items, call the callback when complete
     getItems: function(cb) {
         var url = "/api/items";
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            type: 'GET',
+            headers: {'Authorization': localStorage.token},
+            success: function(res) {
+                if (cb)
+                    cb(true, res);
+            },
+            error: function(xhr, status, err) {
+                // if there is an error, remove the login token
+                delete localStorage.token;
+                if (cb)
+                    cb(false, status);
+            }
+        });
+    },
+    getEntries: function(cb) {
+        var url = "/api/entries";
         $.ajax({
             url: url,
             dataType: 'json',
