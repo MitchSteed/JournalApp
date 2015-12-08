@@ -471,9 +471,42 @@ var Viewentry = React.createClass({
         router: React.PropTypes.func
     },
 
+    getInitialState: function() {
+        return {
+            entry: {},
+        };
+    },
+
+    componentDidMount: function() {
+        console.log("you there?");
+        api.getEntrybyID(this.context.router.getCurrentParams().entryID, this.setEntry);
+    },
+
+    reload: function()
+    {
+        api.getEntrybyID(this.context.router.getCurrentParams().entryID, this.setEntry);
+    },
+
+    setEntry: function(status, data)
+    {
+        console.log("bro");
+        console.log(data);
+        if(status){
+            this.setState({
+                entry: data.entry
+            });
+        }
+        else {
+            this.context.router.transitionTo("/login");
+        }
+    },
+
+
     render: function() {
+        console.log(this);
+        console.log("sanity");
         return(
-            <div>{this.context.router.getCurrentParams().entryID}</div>
+            <h1>{this.state.entry.title}</h1>
         );
     },
 
@@ -582,6 +615,27 @@ var api = {
             }
         });
     },
+
+    getEntrybyID: function(id, cb) {
+        var url = "/api/entries/" + id;
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            type: 'GET',
+            headers: {'Authorization': localStorage.token},
+            success: function(res) {
+                if (cb)
+                    cb(true, res);
+            },
+            error: function(xhr, status, err) {
+                // if there is an error, remove the login token
+                delete localStorage.token;
+                if (cb)
+                    cb(false, status);
+            }
+        });
+    },
+
     getEntries: function(cb) {
         var url = "/api/entries";
         $.ajax({

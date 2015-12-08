@@ -177,16 +177,25 @@ app.get('/api/entries/:entry_id', function (req,res) {
     user = User.verifyToken(req.headers.authorization, function(user) {
         if (user) {
             // if the token is valid, then find the requested item
+            console.log("id request");
+            console.log(req.params.entry_id);
             Entry.findById(req.params.entry_id, function(err, entry) {
                 if (err) {
+                    console.log(err);
                     res.sendStatus(403);
                     return;
                 }
+                console.log(entry.user);
+                console.log("vs.");
+                console.log(user._id);
                 // get the item if it belongs to the user, otherwise return an error
-                if (entry.user != user) {
+                if (String(entry.user) != String(user._id)) {
+                    console.log("dumb user");
                     res.sendStatus(403);
                     return;
                 }
+                console.log("resulting entry");
+                console.log(entry);
                 // return value is the item as JSON
                 res.json({entry:entry});
             });

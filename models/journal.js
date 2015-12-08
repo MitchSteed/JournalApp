@@ -13,8 +13,7 @@ var entrySchema = new Schema({
 	day: {type: Date, default: Date.now},
 	text: String, //look into creating a file and then storing the path
 	keywords: [String],
-	title: String,
-	show_flag: {type: Boolean, default: true}
+	title: String
 });
 
 //Adds an entry with the given information... pass in empty array if no keywords
@@ -86,6 +85,14 @@ entrySchema.methods.specificEntry = function(uname, day)
 	Entry.find({user: uname, day: date}, function(err,entry){
 		if (err) return console.error(err);
 		//console.dir(entry);
+		return entry;
+	});
+}
+
+entrySchema.methods.getEntrybyID = function(id)
+{
+	Entry.findOne({_id: id}, function(err, entry){
+		if (err) return console.error(err);
 		return entry;
 	});
 }
