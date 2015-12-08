@@ -466,6 +466,20 @@ var ListItems = React.createClass({
     }
 });
 
+var Viewentry = React.createClass({
+    contextTypes: {
+        router: React.PropTypes.func
+    },
+
+    render: function() {
+        console.log(this);
+        return(
+            <div>{this.context.router.getCurrentParams().entryID}</div>
+        );
+    },
+
+});
+
 // Item shown in the todo list
 var Item = React.createClass({
     // initial state
@@ -544,19 +558,13 @@ var Item = React.createClass({
             //<li className={classes}>
             <tr>
                 <td>
-                    {this.props.item.title}
+                    <a href = {"#/journal/" + this.props.item._id}>
+                    {this.props.item.title}</a>
                 </td>
                 <td>
                     {this.props.item.day}
                 </td>
-                // <div className="view">
-                // <input id={this.props.item.id} className="toggle" type="checkbox" onChange={this.toggleCompleted.bind(this,this.props.item)} checked={this.props.item.completed} />
-                // <label className="check" htmlFor={this.props.item.id}/>
-                // <label onDoubleClick={this.editItem}>{this.props.item.title}</label>
-                // <button className="destroy" onClick={this.deleteItem}></button>
-                // </div>
-                // <input ref="editField" className="edit" onKeyDown={this.handleKeyDown} onChange={this.changeItem} onSubmit={this.saveItem} onBlur={this.saveItem} value={this.state.editText} />
-            </tr>
+                </tr>
             //</li>
             );
     }
@@ -809,6 +817,7 @@ var routes = (
         <Route name="listjournal" path = "/journal" handler={Journal}/>
 	    <Route name="login" handler={Login}/>
 	    <Route name="register" handler={Register}/>
+        <Route name="viewentry" path = "/journal/:entryID" handler = {Viewentry}/>
     <DefaultRoute handler={Home}/>
     </Route>
     );
