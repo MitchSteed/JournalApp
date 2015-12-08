@@ -128,8 +128,6 @@ app.post('/api/items', function (req,res) {
 app.post('/api/entries', function (req,res) {
     // validate the supplied token
     // get indexes
-    console.log(req.body.entry.title);
-    console.log(req.body.entry.text);
     user = User.verifyToken(req.headers.authorization, function(user) {
         if (user) {
             // if the token is valid, create the item for the user

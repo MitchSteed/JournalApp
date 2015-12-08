@@ -39,7 +39,7 @@ var CreateJournal = React.createClass({
         api.addItem(title, this.props.reload);
         this.refs.title.getDOMNode().value = '';*/
         api.addEntry(title, body, tags, this.props.reload);
-        this.context.router.transitionTo('/journals');
+        this.context.router.transitionTo('/journal');
     },
 
     // render the item entry area
@@ -85,7 +85,6 @@ var Login = React.createClass({
     login: function(event) {
         // prevent default browser submit
         event.preventDefault();
-        console.log(this.refs);
         // get data from form
         var username = this.refs.username.getDOMNode().value;
         var password = this.refs.password.getDOMNode().value;
@@ -99,7 +98,7 @@ var Login = React.createClass({
                 return this.setState({
                     error: true
                 });
-            this.context.router.transitionTo('/list');
+            this.context.router.transitionTo('/journals');
         }.bind(this));
     },
 
@@ -180,9 +179,6 @@ var App = React.createClass({
             <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             {this.state.loggedIn ? (
                 <ul className="nav navbar-nav">
-                <li><a href="#/list">All</a></li>
-                <li><a href="#/list/active">Active</a></li>
-                <li><a href="#/list/completed">Completed</a></li>
                 <li><a href="#/journal">Journals</a></li>
                 <li><a href="#/journal/create">Create Journal</a></li>
                 <li><a href="#" onClick={this.logout}>Logout</a></li>
@@ -287,35 +283,35 @@ var Journal = React.createClass({
     getInitialState: function() {
         return {
             // list of items in the todo list
-            items: [],
+            //items: [],
             entries: [],
         };
     },
 
     // when the component loads, get the list items
     componentDidMount: function() {
-        api.getItems(this.listSet);
+        //api.getItems(this.listSet);
         api.getEntries(this.entrySet);
     },
 
     // reload the list of items
     reload: function() {
-        api.getItems(this.listSet);
+        //api.getItems(this.listSet);
         api.getEntries(this.entrySet);
     },
 
     // callback for getting the list of items, sets the list state
-    listSet: function(status, data) {
-        if (status) {
-            // set the state for the list of items
-            this.setState({
-                entries: data.items
-            });
-        } else {
-            // if the API call fails, redirect to the login page
-            this.context.router.transitionTo('/login');
-        }
-    },
+    // listSet: function(status, data) {
+    //     if (status) {
+    //         // set the state for the list of items
+    //         this.setState({
+    //             entries: data.items
+    //         });
+    //     } else {
+    //         // if the API call fails, redirect to the login page
+    //         this.context.router.transitionTo('/login');
+    //     }
+    // },
     entrySet: function(status, data) {
         if (status) {
             this.setState({
@@ -330,7 +326,6 @@ var Journal = React.createClass({
     // Show the list of items. This component has the following children: ListHeader, ListEntry and ListItems
     render: function() {
         var name = auth.getName();
-        console.log("Journal Render");
         return (
             <section id="todoapp">
                 <ListHeader name={name} items={this.state.entries} reload={this.reload} />
@@ -383,7 +378,6 @@ var List = React.createClass({
     // Show the list of items. This component has the following children: ListHeader, ListEntry and ListItems
     render: function() {
         var name = auth.getName();
-        console.log("LIST RUNNING");
         return (
             <section id="todoapp">
                 <ListHeader name={name} items={this.state.items} reload={this.reload} />
@@ -416,8 +410,6 @@ var ListHeader = React.createClass({
         // var completed = this.props.items.filter(function(item) {
         //     return item.completed;
         // });
-        console.log(this.props);
-        console.log(this.props.items);
         return (
             <header id="header">
                 <div className="row">
@@ -459,10 +451,17 @@ var ListItems = React.createClass({
 
         // render the list
         return (
-            <ul id="todo-list">
-            {list}
-
-            </ul>
+            <table id="entry-table" className="table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {list}
+                </tbody>
+            </table>
             );
     }
 });
@@ -534,23 +533,31 @@ var Item = React.createClass({
     // render the Item
     render: function() {
         // construct a list of classes for the item CSS
-        var classes = "";
-        if (this.props.item.completed) {
-            classes += 'completed';
-        }
-        if (this.state.editing) {
-            classes += ' editing';
-        }
+        // var classes = "";
+        // if (this.props.item.completed) {
+        //     classes += 'completed';
+        // }
+        // if (this.state.editing) {
+        //     classes += ' editing';
+        // }
         return (
-            <li className={classes}>
-            <div className="view">
-            <input id={this.props.item.id} className="toggle" type="checkbox" onChange={this.toggleCompleted.bind(this,this.props.item)} checked={this.props.item.completed} />
-            <label className="check" htmlFor={this.props.item.id}/>
-            <label onDoubleClick={this.editItem}>{this.props.item.title}</label>
-            <button className="destroy" onClick={this.deleteItem}></button>
-            </div>
-            <input ref="editField" className="edit" onKeyDown={this.handleKeyDown} onChange={this.changeItem} onSubmit={this.saveItem} onBlur={this.saveItem} value={this.state.editText} />
-            </li>
+            //<li className={classes}>
+            <tr>
+                <td>
+                    {this.props.item.title}
+                </td>
+                <td>
+                    {this.props.item.day}
+                </td>
+                // <div className="view">
+                // <input id={this.props.item.id} className="toggle" type="checkbox" onChange={this.toggleCompleted.bind(this,this.props.item)} checked={this.props.item.completed} />
+                // <label className="check" htmlFor={this.props.item.id}/>
+                // <label onDoubleClick={this.editItem}>{this.props.item.title}</label>
+                // <button className="destroy" onClick={this.deleteItem}></button>
+                // </div>
+                // <input ref="editField" className="edit" onKeyDown={this.handleKeyDown} onChange={this.changeItem} onSubmit={this.saveItem} onBlur={this.saveItem} value={this.state.editText} />
+            </tr>
+            //</li>
             );
     }
 });
