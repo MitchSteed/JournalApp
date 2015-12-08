@@ -472,7 +472,6 @@ var Viewentry = React.createClass({
     },
 
     render: function() {
-        console.log(this);
         return(
             <div>{this.context.router.getCurrentParams().entryID}</div>
         );
@@ -547,18 +546,7 @@ var Item = React.createClass({
     // render the Item
     render: function() {
         // construct a list of classes for the item CSS
-        // var classes = "";
-        // if (this.props.item.completed) {
-        //     classes += 'completed';
-        // }
-        // if (this.state.editing) {
-        //     classes += ' editing';
-        // }
-        console.log("HERE");
-        console.log(this.props.item);
-        console.log(this.props.item.id);
         return (
-            //<li className={classes}>
             <tr>
                 <td>
                     <a href = {"#/journal/" + this.props.item._id}>
@@ -567,12 +555,7 @@ var Item = React.createClass({
                 <td>
                     {this.props.item.day}
                 </td>
-<<<<<<< HEAD
-                </tr>
-            //</li>
-=======
             </tr>
->>>>>>> b88c7d783181bf193f1202c6d4b03392b05dd800
             );
     }
 });
