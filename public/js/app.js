@@ -98,7 +98,7 @@ var Login = React.createClass({
                 return this.setState({
                     error: true
                 });
-            this.context.router.transitionTo('/journals');
+            this.context.router.transitionTo('/journal');
         }.bind(this));
     },
 
@@ -554,6 +554,9 @@ var Item = React.createClass({
         // if (this.state.editing) {
         //     classes += ' editing';
         // }
+        console.log("HERE");
+        console.log(this.props.item);
+        console.log(this.props.item.id);
         return (
             //<li className={classes}>
             <tr>
@@ -564,8 +567,12 @@ var Item = React.createClass({
                 <td>
                     {this.props.item.day}
                 </td>
+<<<<<<< HEAD
                 </tr>
             //</li>
+=======
+            </tr>
+>>>>>>> b88c7d783181bf193f1202c6d4b03392b05dd800
             );
     }
 });
