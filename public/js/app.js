@@ -506,7 +506,14 @@ var Viewentry = React.createClass({
         console.log(this);
         console.log("sanity");
         return(
-            <h1>{this.state.entry.title}</h1>
+            <div>
+                <h1><u>{this.state.entry.title}</u></h1>
+                <p>Written: {this.state.entry.day} </p>
+                <p>Keywords: {this.state.entry.keywords} </p>
+                <span>
+                    <p>{this.state.entry.text}</p>
+                </span>
+            </div>
         );
     },
 

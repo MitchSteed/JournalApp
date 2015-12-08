@@ -2,6 +2,24 @@ textarea {
     height: 300px;
 }
 
+span p {
+    border: 6px black;
+    color: black;
+    margin 10px;
+    padding 10px;
+    background-color: lightgrey;
+
+  
+}
+
+/*
+span {
+  border: 6px solid navy;
+  color: green;
+  margin: 25px;
+  padding: 25px;
+}*/
+
 /*body {
 }
 
