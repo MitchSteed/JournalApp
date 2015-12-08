@@ -98,7 +98,7 @@ var Login = React.createClass({
                 return this.setState({
                     error: true
                 });
-            this.context.router.transitionTo('/journals');
+            this.context.router.transitionTo('/journal');
         }.bind(this));
     },
 
@@ -549,15 +549,7 @@ var Item = React.createClass({
                 <td>
                     {this.props.item.day}
                 </td>
-                // <div className="view">
-                // <input id={this.props.item.id} className="toggle" type="checkbox" onChange={this.toggleCompleted.bind(this,this.props.item)} checked={this.props.item.completed} />
-                // <label className="check" htmlFor={this.props.item.id}/>
-                // <label onDoubleClick={this.editItem}>{this.props.item.title}</label>
-                // <button className="destroy" onClick={this.deleteItem}></button>
-                // </div>
-                // <input ref="editField" className="edit" onKeyDown={this.handleKeyDown} onChange={this.changeItem} onSubmit={this.saveItem} onBlur={this.saveItem} value={this.state.editText} />
             </tr>
-            //</li>
             );
     }
 });
