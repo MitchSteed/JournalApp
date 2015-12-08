@@ -540,6 +540,9 @@ var Item = React.createClass({
         // if (this.state.editing) {
         //     classes += ' editing';
         // }
+        console.log("HERE");
+        console.log(this.props.item);
+        console.log(this.props.item.id);
         return (
             //<li className={classes}>
             <tr>
