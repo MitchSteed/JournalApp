@@ -312,6 +312,8 @@ var Journal = React.createClass({
     //     }
     // },
     entrySet: function(status, data) {
+        console.log("in here");
+        console.log(data);
         if (status) {
             this.setState({
                 entries: data.entries
@@ -322,11 +324,31 @@ var Journal = React.createClass({
         }
     },
 
+    keywordSearch: function(event){
+        event.preventDefault();
+        var key = this.refs.keyword.getDOMNode().value;
+        console.log(key);
+        if(!key)
+        {
+            return;
+        }
+
+        api.keySearch(key, this.entrySet);
+
+    },
+
     // Show the list of items. This component has the following children: ListHeader, ListEntry and ListItems
     render: function() {
         var name = auth.getName();
         return (
             <section id="todoapp">
+                <form className="form-inline" onSubmit={this.keywordSearch}>
+                  <div className="form-group">
+                    <input type="text" ref="keyword" className="form-control" id="exampleInputName2" placeholder="Keyword Search"/>
+                  </div>
+                  <button type="submit" className="btn btn-success">Search</button>
+                </form>
+                        
                 <ListHeader name={name} items={this.state.entries} reload={this.reload} />
                 <section id="main">
                     <ListItems items={this.state.entries} reload={this.reload}/>
@@ -403,18 +425,10 @@ var ListHeader = React.createClass({
     //     this.props.reload();
     // },
 
-    keywordSearch: function(event){
-        event.preventDefault();
-        var key = this.refs.keyword.getDOMNode().value;
-        console.log(key);
-        if(!key)
-        {
-            return;
-        }
+   
 
-        api.keySearch(key, this.props.reload);
 
-    },
+
     // render the list header
     render: function() {
         // true if there are any completed items
@@ -426,12 +440,6 @@ var ListHeader = React.createClass({
                 <div className="row">
                     <div className="col-md-6">
                         <p><i>{this.props.name} Journal Entries</i></p>
-                        <form className="form-inline" onSubmit={this.keywordSearch}>
-                          <div className="form-group">
-                            <input type="text" ref="keyword" className="form-control" id="exampleInputName2" placeholder="Keyword Search"/>
-                          </div>
-                          <button type="submit" className="btn btn-success">Search</button>
-                        </form>
                         <p>
                         <span id="list-count" className="label label-default">
                         <strong>{this.props.items.length}</strong> entrie(s)
@@ -646,7 +654,7 @@ var api = {
     },
 
     keySearch: function(key, cb) {
-        var url = "/api/entries/" + key;
+        var url = "/api/entriessearch/" + key;
         $.ajax({
             url: url,
             dataType: 'json',
@@ -663,7 +671,7 @@ var api = {
                     cb(false, status);
             }
         });
-    }
+    },
 
     getEntrybyID: function(id, cb) {
         var url = "/api/entries/" + id;
