@@ -55,7 +55,7 @@ var CreateJournal = React.createClass({
                     <textarea className="form-control" ref="entry" id="entrybody"></textarea>
                 </div>
                 <div className="form-group">
-                    <label>Keyword Tags</label>
+                    <label>Keyword Tags (Comma seperated, like this 'cars, christmas, etc')</label>
                     <input type="text" className="form-control" ref="keywords" id="keywords" placeholder="keywords"/>
                 </div>
                 <input className="btn btn-success" type="submit" value="Create" />
@@ -78,7 +78,6 @@ var Login = React.createClass({
             // there was an error on logging in
             error: false
         };
-
     },
 
     // handle login button submit

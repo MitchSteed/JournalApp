@@ -177,27 +177,48 @@ app.get('/api/entries/:entry_id', function (req,res) {
     user = User.verifyToken(req.headers.authorization, function(user) {
         if (user) {
             // if the token is valid, then find the requested item
-            console.log("id request");
-            console.log(req.params.entry_id);
             Entry.findById(req.params.entry_id, function(err, entry) {
+                if (err) {
+                    res.sendStatus(403);
+                    return;
+                }
+                // get the item if it belongs to the user, otherwise return an error
+                if (String(entry.user) != String(user._id)) {
+                    res.sendStatus(403);
+                    return;
+                }
+                // return value is the item as JSON
+                res.json({entry:entry});
+            });
+        } 
+        else {
+            res.sendStatus(403);
+        }
+    });
+});
+
+// get an entry by keyword
+app.get('/api/entries/:keyword', function (req,res) {
+    // validate the supplied token
+    user = User.verifyToken(req.headers.authorization, function(user) {
+        if (user) {
+            // if the token is valid, then find the requested item
+            console.log("get by keyword");
+            console.log(req.params.keyword);
+            Entry.keywordSearch(user.username, req.params.keyword, function(err, entries) {
                 if (err) {
                     console.log(err);
                     res.sendStatus(403);
                     return;
                 }
-                console.log(entry.user);
-                console.log("vs.");
-                console.log(user._id);
                 // get the item if it belongs to the user, otherwise return an error
                 if (String(entry.user) != String(user._id)) {
                     console.log("dumb user");
                     res.sendStatus(403);
                     return;
                 }
-                console.log("resulting entry");
-                console.log(entry);
                 // return value is the item as JSON
-                res.json({entry:entry});
+                res.json({entries:entries});
             });
         } 
         else {
