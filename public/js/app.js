@@ -404,6 +404,18 @@ var ListHeader = React.createClass({
     //     this.props.reload();
     // },
 
+    keywordSearch: function(event){
+        event.preventDefault();
+        var key = this.refs.keyword.getDOMNode().value;
+        console.log(key);
+        if(!key)
+        {
+            return;
+        }
+
+        api.keySearch(key, this.props.reload);
+
+    },
     // render the list header
     render: function() {
         // true if there are any completed items
@@ -415,6 +427,12 @@ var ListHeader = React.createClass({
                 <div className="row">
                     <div className="col-md-6">
                         <p><i>{this.props.name} Journal Entries</i></p>
+                        <form className="form-inline" onSubmit={this.keywordSearch}>
+                          <div className="form-group">
+                            <input type="text" ref="keyword" className="form-control" id="exampleInputName2" placeholder="Keyword Search"/>
+                          </div>
+                          <button type="submit" className="btn btn-success">Search</button>
+                        </form>
                         <p>
                         <span id="list-count" className="label label-default">
                         <strong>{this.props.items.length}</strong> entrie(s)
@@ -627,6 +645,26 @@ var api = {
             }
         });
     },
+
+    keySearch: function(key, cb) {
+        var url = "/api/entries/" + key;
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            type: 'GET',
+            headers: {'Authorization': localStorage.token},
+            success: function(res) {
+                if (cb)
+                    cb(true, res);
+            },
+            error: function(xhr, status, err) {
+                // if there is an error, remove the login token
+                delete localStorage.token;
+                if (cb)
+                    cb(false, status);
+            }
+        });
+    }
 
     getEntrybyID: function(id, cb) {
         var url = "/api/entries/" + id;
