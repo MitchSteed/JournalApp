@@ -3,7 +3,7 @@ var app = require('./models/express.js');
 
 // setup mongoose
 var mongoose = require('mongoose');
-var db = mongoose.connect('mongodb://127.0.0.1:27017/list');
+var db = mongoose.connect('mongodb://localhost/list'); //might need to change localhost??
 
 // models
 var api = require('./models/api.js');
