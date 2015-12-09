@@ -13,7 +13,7 @@ var Item = require('./models/item.js');
 // start the server
 var server = app.listen(3000, function () {
     var host = server.address().address;
-    console.log("started on host " + host):
+    console.log("started on host " + host);
     var port = server.address().port;
     console.log("Started on port " + port);
 
