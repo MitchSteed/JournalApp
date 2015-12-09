@@ -503,16 +503,20 @@ var Viewentry = React.createClass({
 
 
     render: function() {
-        console.log(this);
-        console.log("sanity");
+        var date = new Date(this.state.entry.day);
+        var keywords = ""
+        if (this.state.entry.keywords) {
+            for (var i = 0; i < this.state.entry.keywords.length; i++) {
+                keywords += this.state.entry.keywords[i] + " ";
+            }
+        }
         return(
             <div>
-                <h1><u>{this.state.entry.title}</u></h1>
-                <p>Written: {this.state.entry.day} </p>
-                <p>Keywords: {this.state.entry.keywords} </p>
-                <span>
-                    <p>{this.state.entry.text}</p>
-                </span>
+                <div class="page-header">
+                  <h1>{this.state.entry.title} <small>{(date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear()}</small></h1>
+                </div>      
+                <p>{this.state.entry.text}</p>
+                <p>Keywords: {keywords} </p>
             </div>
         );
     },
@@ -586,6 +590,7 @@ var Item = React.createClass({
     // render the Item
     render: function() {
         // construct a list of classes for the item CSS
+        var date = new Date(this.props.item.day);
         return (
             <tr>
                 <td>
@@ -593,7 +598,7 @@ var Item = React.createClass({
                     {this.props.item.title}</a>
                 </td>
                 <td>
-                    {this.props.item.day}
+                    {(date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear()}
                 </td>
             </tr>
             );
