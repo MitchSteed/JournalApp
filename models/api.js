@@ -206,6 +206,36 @@ app.get('/api/entries/:entry_id', function (req,res) {
     });
 });
 
+// get an entry by keyword
+app.get('/api/entries/:keyword', function (req,res) {
+    // validate the supplied token
+    user = User.verifyToken(req.headers.authorization, function(user) {
+        if (user) {
+            // if the token is valid, then find the requested item
+            console.log("get by keyword");
+            console.log(req.params.keyword);
+            Entry.keywordSearch(user.username, req.params.keyword, function(err, entries) {
+                if (err) {
+                    console.log(err);
+                    res.sendStatus(403);
+                    return;
+                }
+                // get the item if it belongs to the user, otherwise return an error
+                if (String(entry.user) != String(user._id)) {
+                    console.log("dumb user");
+                    res.sendStatus(403);
+                    return;
+                }
+                // return value is the item as JSON
+                res.json({entries:entries});
+            });
+        } 
+        else {
+            res.sendStatus(403);
+        }
+    });
+});
+
 // update an item
 app.put('/api/items/:item_id', function (req,res) {
     // validate the supplied token
