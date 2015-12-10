@@ -1,4 +1,4 @@
-# Journal App, use to write and read journal entries. 
+# Journal App, use to write and read journal entries. Also allows you to search by keyword
 
 
 ## Dependencies

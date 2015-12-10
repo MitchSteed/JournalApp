@@ -312,8 +312,6 @@ var Journal = React.createClass({
     //     }
     // },
     entrySet: function(status, data) {
-        console.log("in here");
-        console.log(data);
         if (status) {
             this.setState({
                 entries: data.entries
@@ -327,7 +325,6 @@ var Journal = React.createClass({
     keywordSearch: function(event){
         event.preventDefault();
         var key = this.refs.keyword.getDOMNode().value;
-        console.log(key);
         if(!key)
         {
             return;
@@ -503,7 +500,6 @@ var Viewentry = React.createClass({
     },
 
     componentDidMount: function() {
-        console.log("you there?");
         api.getEntrybyID(this.context.router.getCurrentParams().entryID, this.setEntry);
     },
 
@@ -514,8 +510,6 @@ var Viewentry = React.createClass({
 
     setEntry: function(status, data)
     {
-        console.log("bro");
-        console.log(data);
         if(status){
             this.setState({
                 entry: data.entry
